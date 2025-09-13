@@ -38,7 +38,7 @@
 
     <form id="codeForm" aria-live="polite">
       <label for="codeInput" class="sr-only">Aktionscode</label>
-      <input id="codeInput" type="text" placeholder="Code eingeben (z. B. a7E43fh0w)" autocomplete="off" inputmode="latin" />
+      <input id="codeInput" type="text" placeholder="Code eingeben" autocomplete="off" inputmode="latin" />
       <button type="submit" title="Prüfen">Prüfen</button>
       <button type="button" id="clearBtn" class="secondary" title="Eingabe löschen">Löschen</button>
     </form>
@@ -51,10 +51,6 @@
       <div class="small">Versuche: <span id="attempts">0</span></div>
       <div class="small">Case-sensitive</div>
     </div>
-
-    <footer>
-      <button id="revealBtn" class="secondary" type="button" title="Zeige Beispielcode">Beispielcode anzeigen</button>
-    </footer>
   </main>
 
   <script>
@@ -91,7 +87,7 @@
       }
 
       if(val === VALID_CODE){
-        window.location.href = 'https://example.com';
+        window.location.href = './index2.html';
       } else {
         showResult(false, 'Code ungültig.');
       }
