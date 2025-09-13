@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Aktionscode prüfen</title>
+  <style>
+    :root{--bg:#0f1724;--card:#0b1220;--accent:#60a5fa;--success:#10b981;--danger:#ef4444;--muted:#94a3b8}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;background:linear-gradient(180deg,#071029 0%,var(--bg) 100%);color:#e6eef8;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+    .card{width:100%;max-width:540px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border:1px solid rgba(255,255,255,0.04);padding:28px;border-radius:14px;box-shadow:0 10px 30px rgba(2,6,23,0.6)}
+    h1{margin:0 0 6px;font-size:20px}
+    p.lead{margin:0 0 20px;color:var(--muted);font-size:14px}
+
+    form{display:flex;gap:12px;flex-wrap:wrap}
+    input[type=text]{flex:1;min-width:200px;padding:12px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);color:inherit;font-size:15px;outline:none}
+    input[type=text]:focus{box-shadow:0 6px 20px rgba(96,165,250,0.08);border-color:rgba(96,165,250,0.24)}
+    button{padding:10px 14px;border-radius:10px;border:none;background:var(--accent);color:#03203a;font-weight:600;cursor:pointer}
+    button.secondary{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
+
+    .result{margin-top:18px;padding:12px;border-radius:10px;font-weight:600;display:flex;align-items:center;gap:10px}
+    .result.success{background:linear-gradient(90deg,rgba(16,185,129,0.12),transparent);border:1px solid rgba(16,185,129,0.12);color:var(--success)}
+    .result.error{background:linear-gradient(90deg,rgba(239,68,68,0.08),transparent);border:1px solid rgba(239,68,68,0.08);color:var(--danger)}
+    .hint{margin-top:12px;font-size:13px;color:var(--muted)}
+
+    .meta{margin-top:16px;display:flex;align-items:center;justify-content:space-between;color:var(--muted);font-size:13px}
+    .small{font-size:12px;color:var(--muted)}
+
+    footer{margin-top:18px;text-align:right}
+
+    @media (max-width:480px){form{flex-direction:column}button{width:100%}}
+  </style>
+</head>
+<body>
+  <main class="card" role="main">
+    <h1>Aktionscode prüfen</h1>
+    <p class="lead">Gib deinen Aktionscode ein und bestätige mit <strong>Prüfen</strong> oder der Enter-/Go-Taste. Die Prüfung erfolgt lokal im Browser.</p>
+
+    <form id="codeForm" aria-live="polite">
+      <label for="codeInput" class="sr-only">Aktionscode</label>
+      <input id="codeInput" type="text" placeholder="Code eingeben (z. B. a7E43fh0w)" autocomplete="off" inputmode="latin" />
+      <button type="submit" title="Prüfen">Prüfen</button>
+      <button type="button" id="clearBtn" class="secondary" title="Eingabe löschen">Löschen</button>
+    </form>
+
+    <div id="resultArea" aria-live="assertive"></div>
+
+    <p class="hint">Hinweis: Diese Demo prüft den Code lokal (Client-seitig). Für echte Aktionen solltest du die Prüfung serverseitig durchführen, damit der Code nicht leicht zu manipulieren ist.</p>
+
+    <div class="meta">
+      <div class="small">Versuche: <span id="attempts">0</span></div>
+      <div class="small">Case-sensitive</div>
+    </div>
+
+    <footer>
+      <button id="revealBtn" class="secondary" type="button" title="Zeige Beispielcode">Beispielcode anzeigen</button>
+    </footer>
+  </main>
+
+  <script>
+    // === Konfiguration ===
+    const VALID_CODE = 'a7E43fh0w';
+
+    // === UI-Elemente ===
+    const form = document.getElementById('codeForm');
+    const codeInput = document.getElementById('codeInput');
+    const clearBtn = document.getElementById('clearBtn');
+    const resultArea = document.getElementById('resultArea');
+    const attemptsEl = document.getElementById('attempts');
+    const revealBtn = document.getElementById('revealBtn');
+
+    let attempts = 0;
+
+    function showResult(success, text){
+      resultArea.innerHTML = '';
+      const div = document.createElement('div');
+      div.className = 'result ' + (success ? 'success' : 'error');
+      div.textContent = text;
+      resultArea.appendChild(div);
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const val = codeInput.value.trim();
+      attempts++;
+      attemptsEl.textContent = attempts;
+
+      if(!val){
+        showResult(false, 'Bitte gib einen Code ein.');
+        return;
+      }
+
+      if(val === VALID_CODE){
+        window.location.href = 'https://example.com';
+      } else {
+        showResult(false, 'Code ungültig.');
+      }
+    });
+
+    clearBtn.addEventListener('click', ()=>{
+      codeInput.value = '';
+      resultArea.innerHTML = '';
+      codeInput.focus();
+    });
+
+    revealBtn.addEventListener('click', ()=>{
+      alert('Beispielcode:\n\n' + VALID_CODE + '\n\nAchtung: In Produktionsumgebungen darf der gültige Code nicht im Client-Quelltext enthalten sein.');
+    });
+
+    window.addEventListener('load', ()=>codeInput.focus());
+  </script>
+</body>
+</html>
